@@ -21,25 +21,32 @@ static InputDebounce buttonLights;    // Headlights
 static InputDebounce buttonSound;     // Stereo
 static InputDebounce buttonMisc;      // Whatever you want
 
+void togglePin(uint8_t pin){
+  digitalWrite(pin, !digitalRead(pin));
+}
 
 void buttonDirection_pressed(uint8_t pinIn){
   Serial.println("Direction pressed");
-  digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
+  togglePin(LED_BUILTIN);
+  togglePin(PIN_DIRECTION_RELAY);
 }
 
 void buttonLights_pressed(uint8_t pinIn){
   Serial.println("Lights pressed");
-  digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
+  togglePin(LED_BUILTIN);
+  togglePin(PIN_LIGHTS_RELAY);
 }
 
 void buttonSound_pressed(uint8_t pinIn){
   Serial.println("Sound pressed");
-  digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
+  togglePin(LED_BUILTIN);
+  togglePin(PIN_SOUND_RELAY);
 }
 
 void buttonMisc_pressed(uint8_t pinIn){
   Serial.println("Misc pressed");
-  digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
+  togglePin(LED_BUILTIN);
+  togglePin(PIN_MISC_RELAY);
 }
 
 void button_releasedCallback(uint8_t pinIn){}
@@ -56,10 +63,10 @@ void setup() {
 
   // Setup pull ups 
   // Relays
-  pinMode(PIN_MISC_RELAY,       INPUT_PULLUP);
-  pinMode(PIN_SOUND_RELAY,      INPUT_PULLUP);
-  pinMode(PIN_LIGHTS_RELAY,     INPUT_PULLUP);
-  pinMode(PIN_DIRECTION_RELAY,  INPUT_PULLUP);
+  pinMode(PIN_MISC_RELAY,       OUTPUT);
+  pinMode(PIN_SOUND_RELAY,      OUTPUT);
+  pinMode(PIN_LIGHTS_RELAY,     OUTPUT);
+  pinMode(PIN_DIRECTION_RELAY,  OUTPUT);
 
   // register callback functions (shared, used by all buttons)
   buttonDirection.registerCallbacks(buttonDirection_pressed,  button_releasedCallback, button_pressedDurationCallback, button_releasedDurationCallback);
