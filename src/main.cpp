@@ -1,25 +1,31 @@
 #include <Arduino.h>
 #include "InputDebounce.h"
+#include <Wire.h>
+#include <hd44780.h>                       // main hd44780 header
+#include <hd44780ioClass/hd44780_I2Cexp.h> // i2c expander i/o class header
 
-// Debounce setup
-#define BUTTON_DEBOUNCE_DELAY   20   // [ms]
-
-// Setup pins for control buttons
+// Control Buttons
 #define PIN_MISC      0
 #define PIN_SOUND     1
 #define PIN_LIGHTS    2
 #define PIN_DIRECTION 3
-
-// Setup pins for the relay board
+// Relay Board
 #define PIN_MISC_RELAY      4
 #define PIN_SOUND_RELAY     5
 #define PIN_LIGHTS_RELAY    6
 #define PIN_DIRECTION_RELAY 7
+// LCD
+hd44780_I2Cexp lcd(0x27); // declare lcd object: auto locate & auto config expander chip
+
+// Debounce setup
+#define BUTTON_DEBOUNCE_DELAY   20   // [ms]
 
 static InputDebounce buttonDirection; // Forward & Reverse toggle
 static InputDebounce buttonLights;    // Headlights
 static InputDebounce buttonSound;     // Stereo
 static InputDebounce buttonMisc;      // Whatever you want
+
+bool going_forward = false;
 
 void togglePin(uint8_t pin){
   digitalWrite(pin, !digitalRead(pin));
@@ -27,39 +33,41 @@ void togglePin(uint8_t pin){
 
 void buttonDirection_pressed(uint8_t pinIn){
   Serial.println("Direction pressed");
-  togglePin(LED_BUILTIN);
   togglePin(PIN_DIRECTION_RELAY);
 }
 
 void buttonLights_pressed(uint8_t pinIn){
   Serial.println("Lights pressed");
-  togglePin(LED_BUILTIN);
   togglePin(PIN_LIGHTS_RELAY);
 }
 
 void buttonSound_pressed(uint8_t pinIn){
   Serial.println("Sound pressed");
-  togglePin(LED_BUILTIN);
   togglePin(PIN_SOUND_RELAY);
 }
 
 void buttonMisc_pressed(uint8_t pinIn){
   Serial.println("Misc pressed");
-  togglePin(LED_BUILTIN);
   togglePin(PIN_MISC_RELAY);
 }
 
-void button_releasedCallback(uint8_t pinIn){}
-void button_pressedDurationCallback(uint8_t pinIn, unsigned long duration){}
-void button_releasedDurationCallback(uint8_t pinIn, unsigned long duration){}
-
 void setup() {
-  // Debug messages
-  Serial.begin(9600);  
-  Serial.println("Here we go");
-
-  // LED for blinking!
-  pinMode(LED_BUILTIN, OUTPUT);
+	// Turn on the blacklight and print a message.
+  int status = lcd.begin(20,4);
+  if(status) // non zero status means it was unsuccesful
+	{
+		// begin() failed so blink error code using the onboard LED if possible
+		hd44780::fatalError(status); // does not return
+	}
+	
+  lcd.setCursor(0,0);
+  lcd.print("Direction:");
+  lcd.setCursor(0,1);
+  lcd.print("Stereo:");
+  lcd.setCursor(0,2);
+  lcd.print("Lights:");
+  lcd.setCursor(0,3);
+  lcd.print("Battery %:");
 
   // Setup pull ups 
   // Relays
@@ -69,10 +77,10 @@ void setup() {
   pinMode(PIN_DIRECTION_RELAY,  OUTPUT);
 
   // register callback functions (shared, used by all buttons)
-  buttonDirection.registerCallbacks(buttonDirection_pressed,  button_releasedCallback, button_pressedDurationCallback, button_releasedDurationCallback);
-  buttonLights.registerCallbacks(buttonLights_pressed,        button_releasedCallback, button_pressedDurationCallback, button_releasedDurationCallback);
-  buttonSound.registerCallbacks(buttonSound_pressed,          button_releasedCallback, button_pressedDurationCallback, button_releasedDurationCallback);
-  buttonMisc.registerCallbacks(buttonMisc_pressed,            button_releasedCallback, button_pressedDurationCallback, button_releasedDurationCallback);
+  buttonDirection.registerCallbacks(buttonDirection_pressed,  NULL, NULL, NULL);
+  buttonLights.registerCallbacks(buttonLights_pressed,        NULL, NULL, NULL);
+  buttonSound.registerCallbacks(buttonSound_pressed,          NULL, NULL, NULL);
+  buttonMisc.registerCallbacks(buttonMisc_pressed,            NULL, NULL, NULL);
 
   // setup input buttons (debounced)
   buttonDirection.setup(PIN_DIRECTION,  BUTTON_DEBOUNCE_DELAY, InputDebounce::PIM_INT_PULL_UP_RES);

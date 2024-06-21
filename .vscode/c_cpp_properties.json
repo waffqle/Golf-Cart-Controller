@@ -10,6 +10,8 @@
             "includePath": [
                 "C:/Users/chris/Documents/GitHub/Golf-Cart-Controller/include",
                 "C:/Users/chris/Documents/GitHub/Golf-Cart-Controller/src",
+                "C:/Users/chris/.platformio/packages/framework-arduino-avr/libraries/Wire/src",
+                "C:/Users/chris/Documents/GitHub/Golf-Cart-Controller/.pio/libdeps/leonardo/hd44780",
                 "C:/Users/chris/Documents/GitHub/Golf-Cart-Controller/.pio/libdeps/leonardo/InputDebounce/src",
                 "C:/Users/chris/.platformio/packages/framework-arduino-avr/cores/arduino",
                 "C:/Users/chris/.platformio/packages/framework-arduino-avr/variants/leonardo",
@@ -17,7 +19,6 @@
                 "C:/Users/chris/.platformio/packages/framework-arduino-avr/libraries/HID/src",
                 "C:/Users/chris/.platformio/packages/framework-arduino-avr/libraries/SPI/src",
                 "C:/Users/chris/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src",
-                "C:/Users/chris/.platformio/packages/framework-arduino-avr/libraries/Wire/src",
                 ""
             ],
             "browse": {
@@ -25,6 +26,8 @@
                 "path": [
                     "C:/Users/chris/Documents/GitHub/Golf-Cart-Controller/include",
                     "C:/Users/chris/Documents/GitHub/Golf-Cart-Controller/src",
+                    "C:/Users/chris/.platformio/packages/framework-arduino-avr/libraries/Wire/src",
+                    "C:/Users/chris/Documents/GitHub/Golf-Cart-Controller/.pio/libdeps/leonardo/hd44780",
                     "C:/Users/chris/Documents/GitHub/Golf-Cart-Controller/.pio/libdeps/leonardo/InputDebounce/src",
                     "C:/Users/chris/.platformio/packages/framework-arduino-avr/cores/arduino",
                     "C:/Users/chris/.platformio/packages/framework-arduino-avr/variants/leonardo",
@@ -32,7 +35,6 @@
                     "C:/Users/chris/.platformio/packages/framework-arduino-avr/libraries/HID/src",
                     "C:/Users/chris/.platformio/packages/framework-arduino-avr/libraries/SPI/src",
                     "C:/Users/chris/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src",
-                    "C:/Users/chris/.platformio/packages/framework-arduino-avr/libraries/Wire/src",
                     ""
                 ]
             },
