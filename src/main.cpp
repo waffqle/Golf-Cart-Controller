@@ -5,15 +5,15 @@
 #include <hd44780ioClass/hd44780_I2Cexp.h> // i2c expander i/o class header
 
 // Control Buttons
-#define PIN_MISC      0
-#define PIN_SOUND     1
-#define PIN_LIGHTS    2
-#define PIN_DIRECTION 3
+#define PIN_MISC      4
+#define PIN_SOUND     5
+#define PIN_LIGHTS    6
+#define PIN_DIRECTION 7
 // Relay Board
-#define PIN_MISC_RELAY      4
-#define PIN_SOUND_RELAY     5
-#define PIN_LIGHTS_RELAY    6
-#define PIN_DIRECTION_RELAY 7
+#define PIN_MISC_RELAY      8
+#define PIN_SOUND_RELAY     9
+#define PIN_LIGHTS_RELAY    10
+#define PIN_DIRECTION_RELAY 11
 // LCD
 hd44780_I2Cexp lcd(0x27); // declare lcd object: auto locate & auto config expander chip
 
@@ -27,8 +27,18 @@ static InputDebounce buttonMisc;      // Whatever you want
 
 bool going_forward = false;
 
-void togglePin(uint8_t pin){
-  digitalWrite(pin, !digitalRead(pin));
+bool togglePin(uint8_t pin){
+  bool newState = !digitalRead(pin);
+  digitalWrite(pin, newState);
+  return newState;
+}
+
+void toggleAccessoryPower(int pin, int row){
+  bool on = togglePin(pin);
+
+  lcd.setCursor(11, row);
+  String status = on ? "On " : "Off";
+  lcd.print(status);
 }
 
 void buttonDirection_pressed(uint8_t pinIn){
@@ -37,19 +47,14 @@ void buttonDirection_pressed(uint8_t pinIn){
 }
 
 void buttonLights_pressed(uint8_t pinIn){
-  Serial.println("Lights pressed");
-  togglePin(PIN_LIGHTS_RELAY);
+  toggleAccessoryPower(PIN_LIGHTS_RELAY, 2);
 }
 
 void buttonSound_pressed(uint8_t pinIn){
-  Serial.println("Sound pressed");
-  togglePin(PIN_SOUND_RELAY);
+  toggleAccessoryPower(PIN_SOUND_RELAY, 1);
 }
 
-void buttonMisc_pressed(uint8_t pinIn){
-  Serial.println("Misc pressed");
-  togglePin(PIN_MISC_RELAY);
-}
+void buttonMisc_pressed(uint8_t pinIn){}
 
 void setup() {
 	// Turn on the blacklight and print a message.
@@ -59,7 +64,8 @@ void setup() {
 		// begin() failed so blink error code using the onboard LED if possible
 		hd44780::fatalError(status); // does not return
 	}
-	
+
+	lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("Direction:");
   lcd.setCursor(0,1);
